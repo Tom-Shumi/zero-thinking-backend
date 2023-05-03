@@ -5,6 +5,7 @@ import (
 
 	"zero-thinking-backend/config"
 	"zero-thinking-backend/controllers"
+	middlewareAuth "zero-thinking-backend/middleware"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -25,6 +26,10 @@ func NewRouter() (*echo.Echo, error) {
 
 	healthController := controllers.NewHealthController()
 	version.GET("/health", healthController.Index)
+
+	thinkingTreeController := controllers.NewThinkingTreeController()
+	version.GET("/thinkingTree", thinkingTreeController.List, middlewareAuth.Auth())
+	version.POST("/thinkingTree", thinkingTreeController.Save, middlewareAuth.Auth())
 
 	return router, nil
 }

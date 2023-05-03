@@ -2,6 +2,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"log"
+
+	"github.com/joho/godotenv"
 
 	"zero-thinking-backend/server"
 
@@ -14,6 +18,12 @@ func main() {
 	flag.Parse()
 
 	config.Init(*env)
+
+	err := godotenv.Load(fmt.Sprintf("env/%s.env", *env))
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// database.Init(false)
 	// defer database.Close()
 	if err := server.Init(); err != nil {
