@@ -7,6 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"zero-thinking-backend/database"
 	"zero-thinking-backend/server"
 
 	"zero-thinking-backend/config"
@@ -24,8 +25,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// database.Init(false)
-	// defer database.Close()
+	database.Init()
+	defer database.Close()
 	if err := server.Init(); err != nil {
 		panic(err)
 	}
