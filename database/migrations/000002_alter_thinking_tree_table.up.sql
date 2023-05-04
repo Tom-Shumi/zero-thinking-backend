@@ -1,0 +1,1 @@
+ALTER TABLE thinking_tree ADD user_id VARCHAR(255) NOT NULL AFTER id;

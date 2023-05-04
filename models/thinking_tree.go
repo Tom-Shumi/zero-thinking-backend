@@ -24,6 +24,7 @@ import (
 // ThinkingTree is an object representing the database table.
 type ThinkingTree struct {
 	ID           int       `boil:"id" json:"id" toml:"id" yaml:"id"`
+	UserID       string    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 	Title        string    `boil:"title" json:"title" toml:"title" yaml:"title"`
 	ThinkingTree string    `boil:"thinking_tree" json:"thinking_tree" toml:"thinking_tree" yaml:"thinking_tree"`
 	InsertDate   time.Time `boil:"insert_date" json:"insert_date" toml:"insert_date" yaml:"insert_date"`
@@ -34,11 +35,13 @@ type ThinkingTree struct {
 
 var ThinkingTreeColumns = struct {
 	ID           string
+	UserID       string
 	Title        string
 	ThinkingTree string
 	InsertDate   string
 }{
 	ID:           "id",
+	UserID:       "user_id",
 	Title:        "title",
 	ThinkingTree: "thinking_tree",
 	InsertDate:   "insert_date",
@@ -46,11 +49,13 @@ var ThinkingTreeColumns = struct {
 
 var ThinkingTreeTableColumns = struct {
 	ID           string
+	UserID       string
 	Title        string
 	ThinkingTree string
 	InsertDate   string
 }{
 	ID:           "thinking_tree.id",
+	UserID:       "thinking_tree.user_id",
 	Title:        "thinking_tree.title",
 	ThinkingTree: "thinking_tree.thinking_tree",
 	InsertDate:   "thinking_tree.insert_date",
@@ -127,11 +132,13 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 
 var ThinkingTreeWhere = struct {
 	ID           whereHelperint
+	UserID       whereHelperstring
 	Title        whereHelperstring
 	ThinkingTree whereHelperstring
 	InsertDate   whereHelpertime_Time
 }{
 	ID:           whereHelperint{field: "`thinking_tree`.`id`"},
+	UserID:       whereHelperstring{field: "`thinking_tree`.`user_id`"},
 	Title:        whereHelperstring{field: "`thinking_tree`.`title`"},
 	ThinkingTree: whereHelperstring{field: "`thinking_tree`.`thinking_tree`"},
 	InsertDate:   whereHelpertime_Time{field: "`thinking_tree`.`insert_date`"},
@@ -154,8 +161,8 @@ func (*thinkingTreeR) NewStruct() *thinkingTreeR {
 type thinkingTreeL struct{}
 
 var (
-	thinkingTreeAllColumns            = []string{"id", "title", "thinking_tree", "insert_date"}
-	thinkingTreeColumnsWithoutDefault = []string{"title", "thinking_tree", "insert_date"}
+	thinkingTreeAllColumns            = []string{"id", "user_id", "title", "thinking_tree", "insert_date"}
+	thinkingTreeColumnsWithoutDefault = []string{"user_id", "title", "thinking_tree", "insert_date"}
 	thinkingTreeColumnsWithDefault    = []string{"id"}
 	thinkingTreePrimaryKeyColumns     = []string{"id"}
 	thinkingTreeGeneratedColumns      = []string{}

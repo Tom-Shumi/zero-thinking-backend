@@ -56,6 +56,7 @@ func (ttc *ThinkingTreeController) Save(c echo.Context) error {
 	db := database.GetDB()
 	thinkingTree := models.ThinkingTree{
 		ID:           1,
+		UserID:       "1",
 		Title:        "test-title",
 		ThinkingTree: "test-thinking-tree",
 		InsertDate:   time.Now(),

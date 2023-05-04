@@ -1,0 +1,1 @@
+ALTER TABLE thinking_tree DROP COLUMN user_id;
