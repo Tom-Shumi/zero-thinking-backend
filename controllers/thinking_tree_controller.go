@@ -23,9 +23,12 @@ func NewThinkingTreeController() *ThinkingTreeController {
 // Index is index route for health
 func (ttc *ThinkingTreeController) List(c echo.Context) error {
 
+	token := c.Get("token").(string)
+
 	// TODO serviceへ移動
 	db := database.GetDB()
-	counts, errCount := models.ThinkingTrees().Count(context.Background(), db)
+	query := models.ThinkingTreeWhere.UserID.EQ(token)
+	counts, errCount := models.ThinkingTrees(query).Count(context.Background(), db)
 
 	var thinkingTreeList []*models.ThinkingTree
 	if errCount != nil {
@@ -36,7 +39,7 @@ func (ttc *ThinkingTreeController) List(c echo.Context) error {
 		thinkingTreeList = make([]*models.ThinkingTree, 0)
 	} else {
 		var errAll error
-		thinkingTreeList, errAll = models.ThinkingTrees().All(context.Background(), db)
+		thinkingTreeList, errAll = models.ThinkingTrees(query).All(context.Background(), db)
 		if errAll != nil {
 			return errAll
 		}

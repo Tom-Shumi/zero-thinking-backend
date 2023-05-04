@@ -34,7 +34,7 @@ func auth(next echo.HandlerFunc) echo.HandlerFunc {
 			return err
 		}
 
-		c.Set("token", token)
+		c.Set("token", token.UID)
 		return next(c)
 	}
 }
