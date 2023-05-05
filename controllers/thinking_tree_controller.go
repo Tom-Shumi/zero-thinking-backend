@@ -26,7 +26,7 @@ func (ttc *ThinkingTreeController) List(c echo.Context) error {
 
 	// TODO serviceへ移動
 	db := database.GetDB()
-	fields := []string{"id", "title", "insert_date"}
+	fields := []string{"id", "theme", "insert_date"}
 	query := []qm.QueryMod{
 		qm.Where("user_id=?", token),
 		qm.OrderBy(`id DESC`),
@@ -62,7 +62,7 @@ func (ttc *ThinkingTreeController) Detail(c echo.Context) error {
 
 	// TODO serviceへ移動
 	db := database.GetDB()
-	fields := []string{"id", "title", "thinking_tree", "insert_date"}
+	fields := []string{"id", "theme", "thinking_tree", "insert_date"}
 	query := []qm.QueryMod{
 		qm.Where("id=?", id),
 		qm.Select(fields...),
@@ -91,18 +91,28 @@ func (ttc *ThinkingTreeController) Detail(c echo.Context) error {
 	))
 }
 
+type ThinkingTree struct {
+	Theme        string `json:"theme"`
+	ThinkingTree string `json:"thinkingTree"`
+}
+
 func (ttc *ThinkingTreeController) Save(c echo.Context) error {
+	token := c.Get("token").(string)
+
+	thinkingTree := new(ThinkingTree)
+	if err := c.Bind(thinkingTree); err != nil {
+		return err
+	}
 
 	// TODO serviceへ移動
 	db := database.GetDB()
-	thinkingTree := models.ThinkingTree{
-		ID:           1,
-		UserID:       "1",
-		Title:        "test-title",
-		ThinkingTree: "test-thinking-tree",
+	thinkingTreeEntity := models.ThinkingTree{
+		UserID:       token,
+		Theme:        thinkingTree.Theme,
+		ThinkingTree: thinkingTree.ThinkingTree,
 		InsertDate:   time.Now(),
 	}
-	thinkingTree.Insert(context.Background(), db, boil.Infer())
+	thinkingTreeEntity.Insert(context.Background(), db, boil.Infer())
 
 	return c.JSON(http.StatusOK, newResponse(
 		http.StatusOK,
