@@ -29,6 +29,7 @@ func NewRouter() (*echo.Echo, error) {
 
 	thinkingTreeController := controllers.NewThinkingTreeController()
 	version.GET("/thinkingTree", thinkingTreeController.List, middlewareAuth.Auth())
+	version.GET("/thinkingTree/:id", thinkingTreeController.Detail, middlewareAuth.Auth())
 	version.POST("/thinkingTree", thinkingTreeController.Save, middlewareAuth.Auth())
 
 	return router, nil

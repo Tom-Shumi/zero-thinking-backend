@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	"zero-thinking-backend/database"
@@ -10,25 +11,28 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-// HealthController controller for health request
 type ThinkingTreeController struct{}
 
-// NewHealthController is constructer for HealthController
 func NewThinkingTreeController() *ThinkingTreeController {
 	return new(ThinkingTreeController)
 }
 
-// Index is index route for health
 func (ttc *ThinkingTreeController) List(c echo.Context) error {
 
 	token := c.Get("token").(string)
 
 	// TODO serviceへ移動
 	db := database.GetDB()
-	query := models.ThinkingTreeWhere.UserID.EQ(token)
-	counts, errCount := models.ThinkingTrees(query).Count(context.Background(), db)
+	fields := []string{"id", "title", "insert_date"}
+	query := []qm.QueryMod{
+		qm.Where("user_id=?", token),
+		qm.OrderBy(`id DESC`),
+		qm.Select(fields...),
+	}
+	counts, errCount := models.ThinkingTrees(query...).Count(context.Background(), db)
 
 	var thinkingTreeList []*models.ThinkingTree
 	if errCount != nil {
@@ -39,7 +43,7 @@ func (ttc *ThinkingTreeController) List(c echo.Context) error {
 		thinkingTreeList = make([]*models.ThinkingTree, 0)
 	} else {
 		var errAll error
-		thinkingTreeList, errAll = models.ThinkingTrees(query).All(context.Background(), db)
+		thinkingTreeList, errAll = models.ThinkingTrees(query...).All(context.Background(), db)
 		if errAll != nil {
 			return errAll
 		}
@@ -52,7 +56,41 @@ func (ttc *ThinkingTreeController) List(c echo.Context) error {
 	))
 }
 
-// Index is index route for health
+func (ttc *ThinkingTreeController) Detail(c echo.Context) error {
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	// TODO serviceへ移動
+	db := database.GetDB()
+	fields := []string{"id", "title", "thinking_tree", "insert_date"}
+	query := []qm.QueryMod{
+		qm.Where("id=?", id),
+		qm.Select(fields...),
+	}
+	counts, errCount := models.ThinkingTrees(query...).Count(context.Background(), db)
+
+	var thinkingTree *models.ThinkingTree
+	if errCount != nil {
+		return errCount
+	}
+
+	if counts == 0 {
+		thinkingTree = nil
+	} else {
+		var errOne error
+		thinkingTree, errOne = models.ThinkingTrees(query...).One(context.Background(), db)
+		if errOne != nil {
+			return errOne
+		}
+	}
+
+	return c.JSON(http.StatusOK, newResponse(
+		http.StatusOK,
+		http.StatusText(http.StatusOK),
+		thinkingTree,
+	))
+}
+
 func (ttc *ThinkingTreeController) Save(c echo.Context) error {
 
 	// TODO serviceへ移動
