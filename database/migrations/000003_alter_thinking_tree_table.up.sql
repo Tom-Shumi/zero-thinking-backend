@@ -1,0 +1,1 @@
+ALTER TABLE thinking_tree CHANGE COLUMN title theme varchar(255) NOT NULL;
